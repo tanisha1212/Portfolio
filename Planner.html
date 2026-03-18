@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Planner — Dark Academia</title>
+  <style>
+    :root{
+      --bg:#0f0f10;
+      --panel:#141414;
+      --panel-2:#181819;
+      --text:#e8e1d6;
+      --muted:#aaa093;
+      --line:#2a2a2b;
+      --header:#7a4936;
+      --header-2:#8b5841;
+      --blue:#4c6580;
+      --green:#4f6a4e;
+      --gold:#9a7a43;
+      --purple:#6f5a87;
+      --red:#8a4b4b;
+      --pink:#8a5362;
+      --cream:#efe6da;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Times New Roman',serif}
+    button,input,select{font:inherit}
+    .topbar{height:42px;background:#0a0a0a;border-bottom:1px solid #181818;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:12px;color:var(--muted)}
+    .topbar-left,.topbar-right{display:flex;align-items:center;gap:10px;white-space:nowrap}.top-icon{opacity:.9;font-size:13px}
+    .banner-top{height:150px;overflow:hidden;background:#201916}.banner-mid{height:70px;overflow:hidden;margin:10px 0 14px;background:#15110f}.banner-top img,.banner-mid img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.75) brightness(.82)}
+    .main-wrap{max-width:1400px;margin:0 auto;padding:18px 20px 36px}.title-row{display:flex;align-items:flex-start;gap:18px;margin:4px 0 16px}
+    .planner-icon{width:42px;height:52px;border-radius:10px;background:linear-gradient(180deg,#d99b2a,#b67617);position:relative;flex:0 0 auto;box-shadow:0 0 0 2px rgba(0,0,0,.15)}
+    .planner-icon::before{content:"";position:absolute;right:4px;top:5px;width:7px;bottom:5px;border-radius:4px;background:#fff1d6}.planner-icon::after{content:"";position:absolute;left:-4px;top:8px;width:8px;height:36px;border-radius:8px;background:#f0c77b}
+    .page-title{font-size:30px;line-height:1.1;margin:10px 0 0;color:#f2e8da;font-weight:700}
+
+    .dashboard-grid{display:grid;grid-template-columns:260px minmax(0,1fr) 260px;gap:16px;align-items:start}.stack{display:grid;gap:14px;min-width:0}
+    .section-bar{background:var(--header);color:#f3e9dd;text-align:center;padding:7px 10px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(255,255,255,.05);margin-bottom:8px}
+    .section-content{background:transparent;border:1px solid var(--line);border-top:none;padding:8px 10px 10px;min-height:46px}
+    .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid #252526;color:var(--text);vertical-align:middle}th{color:var(--muted);font-weight:400;font-size:11px}
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.gallery-card{background:#111;border:1px solid var(--line);min-height:155px}.gallery-image{height:105px;background:#1a1a1b;overflow:hidden}.gallery-image img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.78) brightness(.82)}.gallery-label{padding:7px 8px 9px;font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px}.dot-icon{width:7px;height:7px;border-radius:50%;background:#c29b68;display:inline-block;flex:0 0 auto}
+    .video-card{height:140px;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;border:1px solid var(--line);overflow:hidden;background:#141415}.video-card img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.75) brightness(.82)}.video-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.32));font-size:14px}.play{width:42px;height:30px;background:#cf2b25;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;padding-left:2px}
+    .wide-section{margin-top:20px}
+
+    .ghost-btn,.tiny-btn,.color-swatch,.star-btn{background:#1b1b1d;border:1px solid #2e2e30;color:var(--muted);border-radius:6px;cursor:pointer}.ghost-btn{padding:6px 9px;font-size:12px}.tiny-btn{padding:3px 7px;font-size:11px}.star-btn{padding:2px 7px;font-size:12px}.star-btn.active{color:#f2d079}
+    .editable-row{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid #212122}.editable-row:last-child{border-bottom:none}.editable-row input,.editable-row select{width:100%;background:#121214;border:1px solid #2b2b2d;color:var(--text);padding:6px 7px;border-radius:6px;font-size:12px}.editable-row .drag{cursor:grab;color:var(--muted);padding:0 4px;text-align:center}
+    .actions{display:flex;gap:4px;align-items:center;flex-wrap:wrap}.empty{color:#6f675f;font-size:12px;padding:8px 0}.strike{text-decoration:line-through;opacity:.6}
+    .row-top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}.mini-cal{background:#101011;border:1px solid var(--line);padding:8px;border-radius:6px}.mini-cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:11px;color:var(--muted)}.mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.mini-cell,.mini-dow{font-size:10px;text-align:center;padding:4px 0;border-radius:4px}.mini-dow{color:var(--muted)}.mini-cell{background:#171718;border:1px solid #232325;color:var(--text)}.mini-cell.today{outline:1px solid var(--header-2)}.mini-cell.has{box-shadow:inset 0 -2px 0 var(--header-2)}
+    .class-toolbar,.list-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.class-edit{display:grid;grid-template-columns:1fr auto auto;gap:6px;margin-top:8px}.class-edit input,.class-edit select{background:#121214;border:1px solid #2b2b2d;color:var(--text);padding:6px 7px;border-radius:6px;font-size:12px}.class-edit button{padding:6px 9px}
+    .graph-wrap{height:180px;border:1px solid var(--line);padding:10px;background:#101011}.graph-svg{width:100%;height:100%}
+    .timer-box{display:grid;gap:10px}.timer-display{font-size:34px;text-align:center;color:var(--cream)}.timer-row{display:flex;gap:8px;flex-wrap:wrap}.timer-row input{flex:1;min-width:80px;background:#121214;border:1px solid #2b2b2d;color:var(--text);padding:7px;border-radius:6px}
+
+    @media (max-width:1100px){.dashboard-grid{grid-template-columns:1fr}.gallery-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:700px){.gallery-grid{grid-template-columns:1fr}.page-title{font-size:24px}}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-left"><span class="top-icon">☰</span><span class="top-icon">📒</span><span>Student's Planner DARK ACADEMIA</span></div>
+    <div class="topbar-right"><span>Edited just now</span><span>Share</span><span class="top-icon">◌</span><span class="top-icon">◌</span><span class="top-icon">☆</span><span class="top-icon">⋯</span></div>
+  </div>
+
+  <div class="banner-top"><img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1600&q=80" alt="book pages banner"></div>
+
+  <div class="main-wrap">
+    <div class="title-row"><div class="planner-icon"></div><h1 class="page-title">Student's Planner DARK ACADEMIA</h1></div>
+    <div class="banner-mid"><img src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=1600&q=80" alt="chess banner"></div>
+
+    <div class="dashboard-grid">
+      <div class="stack">
+        <section>
+          <div class="section-bar">Upcoming Exams &amp; Quizzes</div>
+          <div class="section-content">
+            <div class="list-toolbar"><button class="ghost-btn" onclick="addExam()">+ New Exam</button></div>
+            <div class="mini-cal" id="examCalendar"></div>
+            <div class="table-wrap" style="margin-top:10px;">
+              <table>
+                <thead><tr><th>★</th><th>Name</th><th>Due</th><th></th></tr></thead>
+                <tbody id="examTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-bar">To-Do List</div>
+          <div class="section-content">
+            <div class="list-toolbar"><button class="ghost-btn" onclick="addTodo()">+ New To-Do</button></div>
+            <div class="mini-cal" id="todoCalendar"></div>
+            <div id="todoList" style="margin-top:10px;"></div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-bar">Study Playlist</div>
+          <div class="section-content">
+            <div class="video-card">
+              <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=900&q=80" alt="study playlist">
+              <div class="video-overlay"><div>study playlist preview</div><div class="play">▶</div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section>
+          <div class="section-bar">Classes</div>
+          <div class="section-content">
+            <div class="class-toolbar"><button class="ghost-btn" onclick="addClassCard()">+ New Class</button></div>
+            <div class="gallery-grid" id="classesGrid"></div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-bar">Homework</div>
+          <div class="section-content">
+            <div class="row-top"><div style="font-size:12px;color:var(--muted)">Table</div><button class="ghost-btn" onclick="addHomework()">+ New Homework</button></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>★</th><th>Name</th><th>Due</th><th>✓</th><th>Class</th><th></th></tr></thead>
+                <tbody id="homeworkTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-bar">Calendar</div>
+          <div class="section-content">
+            <div class="mini-cal" id="mainCalendar"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section>
+          <div class="section-bar">Extra-Curriculars</div>
+          <div class="section-content">
+            <div class="list-toolbar"><button class="ghost-btn" onclick="addExtra()">+ New Extra-Curricular</button></div>
+            <div id="extrasList"></div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-bar">Study Timer</div>
+          <div class="section-content">
+            <div class="timer-box">
+              <div class="timer-display" id="timerDisplay">00:00</div>
+              <div class="timer-row">
+                <input id="timerMinutes" type="number" min="0" placeholder="Minutes">
+                <button class="ghost-btn" onclick="startTimer()">Start</button>
+                <button class="ghost-btn" onclick="pauseTimer()">Pause</button>
+                <button class="ghost-btn" onclick="saveSession()">Save</button>
+              </div>
+              <div style="font-size:12px;color:var(--muted)">Saved sessions build the graph below.</div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-bar">Study Frequency</div>
+          <div class="section-content">
+            <div class="graph-wrap"><svg class="graph-svg" id="studyGraph" viewBox="0 0 300 160" preserveAspectRatio="none"></svg></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const LS_KEY='dark_academia_student_planner_v3';
+    const defaultState={
+      exams:[],
+      todos:[],
+      extras:[],
+      studySessions:[],
+      classes:[
+        {name:'Maths',img:'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=900&q=80',color:'blue'},
+        {name:'Physics',img:'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=900&q=80',color:'blue'},
+        {name:'English',img:'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=900&q=80',color:'gold'},
+        {name:'Biology',img:'https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=900&q=80',color:'green'},
+        {name:'Philosophy',img:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=900&q=80',color:'gold'},
+        {name:'Music',img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=900&q=80',color:'purple'}
+      ],
+      homework:[]
+    };
+    let state=JSON.parse(localStorage.getItem(LS_KEY)||'null')||structuredClone(defaultState);
+    let dragStore=null; let timerInterval=null; let timerRemaining=0;
+
+    function save(){localStorage.setItem(LS_KEY,JSON.stringify(state));renderAll();}
+    function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+    function todayISO(){return new Date().toISOString().slice(0,10)}
+    function sortFavDate(arr){arr.sort((a,b)=>Number(!!b.favorite)-Number(!!a.favorite)||String(a.date||'').localeCompare(String(b.date||''))||String(a.name||'').localeCompare(String(b.name||'')))}
+    function renderMiniCalendar(elId, items){
+      const root=document.getElementById(elId); if(!root) return;
+      const now=new Date(); const year=now.getFullYear(), month=now.getMonth();
+      const first=new Date(year,month,1), startDay=first.getDay(), daysInMonth=new Date(year,month+1,0).getDate();
+      const labels=['S','M','T','W','T','F','S'];
+      const marked=new Set((items||[]).map(x=>x.date).filter(Boolean));
+      let html=`<div class="mini-cal-head"><span>${now.toLocaleString('default',{month:'long'})} ${year}</span><span>${now.toLocaleDateString()}</span></div><div class="mini-grid">`;
+      html+=labels.map(l=>`<div class="mini-dow">${l}</div>`).join('');
+      for(let i=0;i<startDay;i++) html+='<div></div>';
+      for(let d=1;d<=daysInMonth;d++){
+        const iso=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        html+=`<div class="mini-cell ${iso===todayISO()?'today':''} ${marked.has(iso)?'has':''}">${d}</div>`;
+      }
+      html+='</div>'; root.innerHTML=html;
+    }
+
+    function idToArr(id){return ({examTable:'exams',homeworkTable:'homework',todoList:'todos',extrasList:'extras'})[id];}
+    function dragStart(id,index){dragStore={id,index};}
+    function dropRow(id,index){if(!dragStore||dragStore.id!==id) return; const arr=state[idToArr(id)]; const [item]=arr.splice(dragStore.index,1); arr.splice(index,0,item); dragStore=null; save();}
+    function updateItem(id,index,key,val){const arr=state[idToArr(id)]; arr[index][key]=val; save();}
+    function removeItem(id,index){const arr=state[idToArr(id)]; arr.splice(index,1); save();}
+    function toggleFavorite(id,index){const arr=state[idToArr(id)]; arr[index].favorite=!arr[index].favorite; save();}
+
+    function addExam(){state.exams.push({name:'',date:'',favorite:false}); save();}
+    function addTodo(){state.todos.push({name:'',date:'',favorite:false,done:false}); save();}
+    function addExtra(){state.extras.push({name:'',date:'',favorite:false,done:false}); save();}
+    function addHomework(){state.homework.push({name:'',date:'',favorite:false,done:false,classTag:''}); save();}
+    function addClassCard(){state.classes.push({name:'New Class',img:'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80',color:'blue'}); save();}
+    function updateClass(index,key,val){state.classes[index][key]=val; save();}
+    function removeClass(index){state.classes.splice(index,1); save();}
+    function moveClass(index,dir){const ni=index+dir; if(ni<0||ni>=state.classes.length) return; [state.classes[index],state.classes[ni]]=[state.classes[ni],state.classes[index]]; save();}
+
+    function renderSimpleList(targetId, arr, withCheck=true){
+      const root=document.getElementById(targetId); if(!root) return;
+      sortFavDate(arr);
+      if(!arr.length){root.innerHTML='<div class="empty">Empty</div>'; return;}
+      root.innerHTML=arr.map((item,i)=>`<div class="editable-row" draggable="true" ondragstart="dragStart('${targetId}',${i})" ondragover="event.preventDefault()" ondrop="dropRow('${targetId}',${i})"><div class="drag">↕</div><input class="${item.done?'strike':''}" value="${esc(item.name||'')}" onchange="updateItem('${targetId}',${i},'name',this.value)"><input type="date" value="${esc(item.date||'')}" onchange="updateItem('${targetId}',${i},'date',this.value)"><button class="star-btn ${item.favorite?'active':''}" onclick="toggleFavorite('${targetId}',${i})">★</button>${withCheck?`<input type="checkbox" ${item.done?'checked':''} onchange="updateItem('${targetId}',${i},'done',this.checked)">`:'<span></span>'}<button class="tiny-btn" onclick="removeItem('${targetId}',${i})">✕</button></div>`).join('');
+    }
+
+    function renderExams(){sortFavDate(state.exams); renderMiniCalendar('examCalendar',state.exams); const root=document.getElementById('examTable'); if(!state.exams.length){root.innerHTML='<tr><td colspan="4" class="empty">Empty</td></tr>'; return;} root.innerHTML=state.exams.map((item,i)=>`<tr draggable="true" ondragstart="dragStart('examTable',${i})" ondragover="event.preventDefault()" ondrop="dropRow('examTable',${i})"><td><button class="star-btn ${item.favorite?'active':''}" onclick="toggleFavorite('examTable',${i})">★</button></td><td><input value="${esc(item.name||'')}" onchange="updateItem('examTable',${i},'name',this.value)" style="width:100%;background:#121214;border:1px solid #2b2b2d;color:var(--text);padding:6px 7px;border-radius:6px;font-size:12px"></td><td><input type="date" value="${esc(item.date||'')}" onchange="updateItem('examTable',${i},'date',this.value)" style="background:#121214;border:1px solid #2b2b2d;color:var(--text);padding:6px 7px;border-radius:6px;font-size:12px"></td><td><button class="tiny-btn" onclick="removeItem('examTable',${i})">✕</button></td></tr>`).join('');}
+
+    function renderHomework(){sortFavDate(state.homework); const root=document.getElementById('homeworkTable'); if(!state.homework.length){root.innerHTML='<tr><td colspan="6" class="empty">Empty</td></tr>'; return;} root.innerHTML=state.homework.map((item,i)=>`<tr draggable="true" ondragstart="dragStart('homeworkTable',${i})" ondragover="event.preventDefault()" ondrop="dropRow('homeworkTable',${i})"><td><button class="star-btn ${item.favorite?'active':''}" onclick="toggleFavorite('homeworkTable',${i})">★</button></td><td><input class="${item.done?'strike':''}" value="${esc(item.name||'')}" onchange="updateItem('homeworkTable',${i},'name',this.value)" style="width:100%;background:#121214;border:1px solid #2b2b2d;color:var(--text);padding:6px 7px;border-radius:6px;font-size:12px"></td><td><input type="date" value="${esc(item.date||'')}" onchange="updateItem('homeworkTable',${i},'date',this.value)" style="background:#121214;border:1px solid #2b2b2d;color:var(--text);padding:6px 7px;border-radius:6px;font-size:12px"></td><td><input type="checkbox" ${item.done?'checked':''} onchange="updateItem('homeworkTable',${i},'done',this.checked)"></td><td><input value="${esc(item.classTag||'')}" onchange="updateItem('homeworkTable',${i},'classTag',this.value)" style="width:100%;background:#121214;border:1px solid #2b2b2d;color:var(--text);padding:6px 7px;border-radius:6px;font-size:12px"></td><td><button class="tiny-btn" onclick="removeItem('homeworkTable',${i})">✕</button></td></tr>`).join('');}
+
+    function renderClasses(){const root=document.getElementById('classesGrid'); root.innerHTML=state.classes.map((c,i)=>`<div class="gallery-card"><div class="gallery-image"><img src="${esc(c.img)}" alt="${esc(c.name)}"></div><div class="gallery-label"><span class="dot-icon"></span>${esc(c.name)}</div><div class="class-edit"><input value="${esc(c.name)}" onchange="updateClass(${i},'name',this.value)"><select onchange="updateClass(${i},'color',this.value)"><option ${c.color==='blue'?'selected':''} value="blue">Blue</option><option ${c.color==='green'?'selected':''} value="green">Green</option><option ${c.color==='gold'?'selected':''} value="gold">Gold</option><option ${c.color==='purple'?'selected':''} value="purple">Purple</option><option ${c.color==='red'?'selected':''} value="red">Red</option><option ${c.color==='pink'?'selected':''} value="pink">Pink</option></select><div class="actions"><button class="tiny-btn" onclick="moveClass(${i},-1)">↑</button><button class="tiny-btn" onclick="moveClass(${i},1)">↓</button><button class="tiny-btn" onclick="removeClass(${i})">✕</button></div></div></div>`).join('');}
+
+    function startTimer(){const mins=Math.max(0,Number(document.getElementById('timerMinutes').value||0)); timerRemaining=mins*60; clearInterval(timerInterval); document.getElementById('timerDisplay').textContent=formatTime(timerRemaining); timerInterval=setInterval(()=>{if(timerRemaining<=0){clearInterval(timerInterval); return;} timerRemaining--; document.getElementById('timerDisplay').textContent=formatTime(timerRemaining);},1000);} 
+    function pauseTimer(){clearInterval(timerInterval);} 
+    function saveSession(){const mins=Math.round(timerRemaining/60); state.studySessions.push({date:todayISO(),minutes:mins}); save();}
+    function formatTime(sec){const m=String(Math.floor(sec/60)).padStart(2,'0'); const s=String(sec%60).padStart(2,'0'); return `${m}:${s}`;}
+    function renderGraph(){const svg=document.getElementById('studyGraph'); const map={}; state.studySessions.forEach(s=>{map[s.date]=(map[s.date]||0)+Number(s.minutes||0)}); const keys=Object.keys(map).sort().slice(-7); const vals=keys.map(k=>map[k]); const max=Math.max(1,...vals,60); const w=300,h=160,p=20; let bars=''; keys.forEach((k,i)=>{const bw=28, gap=12, x=p+i*(bw+gap), bh=((vals[i]||0)/max)*(h-45), y=h-25-bh; bars+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" fill="#8b5841"></rect><text x="${x+bw/2}" y="${h-10}" fill="#aaa093" font-size="9" text-anchor="middle">${k.slice(5)}</text>`;}); svg.innerHTML=`<line x1="20" y1="135" x2="290" y2="135" stroke="#2a2a2b" />${bars}`;}
+
+    function renderAll(){renderExams();renderSimpleList('todoList',state.todos,true);renderSimpleList('extrasList',state.extras,true);renderClasses();renderHomework();renderMiniCalendar('mainCalendar',[...state.exams,...state.todos,...state.homework,...state.extras]);renderGraph();}
+    renderAll();
+  </script>
+</body>
+</html>
